@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/INTROX-AI"><img src="https://github.com/user-attachments/assets/7e2639bf-80cd-4d31-9a3d-5261ea2ae886" alt="SACHINBP1024" width="298" /></a> 
+  <a href="https://github.com/INTROX-AI"><img src="https://github.com/INTROX-AI/INTROX-AI/blob/efbf14c8c401c5db91b77b8aa85be947c966e798/assets/logo.gif" alt="SACHINBP1024" width="298" /></a> 
 </p>
 <p align="center">
   <a href="https://github.com/SACHINBP1024"><img src="https://github.com/user-attachments/assets/fea84d86-8f4a-4741-8afc-0961569d9300" alt="SACHINBP1024" width="298" /></a> 
