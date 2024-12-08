@@ -82,7 +82,7 @@ To enhance portability and convenience, SimplyTalk could evolve into a wearable 
 * Mic Can Be Accessed Only Through Localhost or a secure HTTPS connection
 
 ## Screenshots 📷📱
-![Screenshots ](https://github.com/user-attachments/assets/6c4a9276-cf58-401f-ae62-9b95cc477ca7)
+![Screenshots ](https://github.com/INTROX-AI/INTROX-AI/blob/44893d511a644268b983229ecbb71b4e87e31784/assets/screenshotsst.png)
 
 ## Contributing 🤝
 
