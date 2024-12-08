@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SimplyTalk</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <style>
+        body {
+            background: url("{{ url_for('static', filename='bg.png') }}") no-repeat center center fixed;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+    <div class="mode-buttons">
+        <button id="conversation-mode" class="mode-btn active">Conversation Mode</button>
+        <button id="travel-mode" class="mode-btn">Travel Mode</button>
+    </div>
+    <div class="container">
+        <div class="header">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo">
+            <h1 class="pixelify-sans-title">SimplyTalk    /</h1>
+            <div class="dropdown">
+                <button class="dropbtn" id="language-button">Select Language</button>
+                <div class="dropdown-content">
+                    <a href="#" onclick="setLanguage('en-US', 'English')">English</a>
+                    <a href="#" onclick="setLanguage('hi-IN', 'Hindi')">Hindi</a>
+                    <a href="#" onclick="setLanguage('ml-IN', 'Malayalam')">Malayalam</a>
+                </div>
+            </div>
+        </div>
+        <div id="transcription" class="transcription-box">Transcription will appear here...</div>
+        <div class="button-container">
+            <button id="start-recording" class="Btn">Start Recording
+                <img src="{{ url_for('static', filename='mic.svg') }}" class="svg" alt="Start Recording">
+            </button>
+            <button id="stop-recording" class="Btn" disabled>Stop Recording
+                <img src="{{ url_for('static', filename='micoff.svg') }}" class="svg" alt="Stop Recording">
+            </button>
+        </div>
+    </div>
+
+    <script>
+        var socket = io();
+        var mediaRecorder;
+        var audioChunks = [];
+        var recordingInterval;
+        var chunkDuration = 15000; // Set the chunk duration in milliseconds
+        var selectedLanguage = 'en-US'; // Default language
+        var currentMode = 'conversation'; // Default mode
+
+        function setLanguage(language, languageName) {
+            selectedLanguage = language;
+            document.getElementById('language-button').innerText = languageName;
+            document.querySelector('.dropdown-content').style.display = 'none';
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('conversation-mode').classList.remove('active');
+            document.getElementById('travel-mode').classList.remove('active');
+            document.getElementById(mode + '-mode').classList.add('active');
+        }
+
+        socket.on('simplified_text', function(data) {
+            document.getElementById('transcription').innerText = data.text;
+        });
+
+        document.getElementById('start-recording').onclick = function() {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(function(stream) {
+                    mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+
+                    mediaRecorder.ondataavailable = function(event) {
+                        audioChunks.push(event.data);
+                    };
+
+                    mediaRecorder.onstop = function() {
+                        var audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        audioChunks = [];
+                        var reader = new FileReader();
+                        reader.readAsDataURL(audioBlob);
+                        reader.onloadend = function() {
+                            var base64String = reader.result.split(',')[1];
+                            socket.emit('audio_data', { audio: base64String, language: selectedLanguage, mode: currentMode });
+                        };
+                    };
+
+                    recordingInterval = setInterval(function() {
+                        if (mediaRecorder.state === "recording") {
+                            mediaRecorder.stop();
+                        }
+                        mediaRecorder.start();
+                    }, chunkDuration);
+
+                    mediaRecorder.start();
+                    document.getElementById('start-recording').disabled = true;
+                    document.getElementById('stop-recording').disabled = false;
+                    document.getElementById('conversation-mode').disabled = true;
+                    document.getElementById('travel-mode').disabled = true;
+                });
+        };
+
+        document.getElementById('stop-recording').onclick = function() {
+            clearInterval(recordingInterval);
+            mediaRecorder.stop();
+            document.getElementById('start-recording').disabled = false;
+            document.getElementById('stop-recording').disabled = true;
+            document.getElementById('conversation-mode').disabled = false;
+            document.getElementById('travel-mode').disabled = false;
+        };
+
+        document.getElementById('conversation-mode').onclick = function() {
+            setMode('conversation');
+        };
+
+        document.getElementById('travel-mode').onclick = function() {
+            setMode('travel');
+        };
+    </script>
+</body>
+</html>
