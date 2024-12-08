@@ -1,6 +1,6 @@
 
 <p align="center">
-  <a href="https://github.com/SACHINBP1024/SimplyTalk"><img src="https://github.com/INTROX-AI/INTROX-AI/blob/288ce985529ee72d736a4fd511125440e8b0be17/assets/BANNER.png" alt="SimplyTalk" width="450" /></a> 
+  <a href="https://github.com/SACHINBP1024/SimplyTalk"><img src="https://github.com/INTROX-AI/INTROX-AI/blob/288ce985529ee72d736a4fd511125440e8b0be17/assets/BANNER.png" alt="SimplyTalk" width="700" /></a> 
 </p>
 
 # SimplyTalk 📱🗣️
